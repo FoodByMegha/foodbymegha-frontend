@@ -22,7 +22,12 @@ function Login() {
         try {
             const res = await API.post('/auth/login', form)
             localStorage.setItem('token', res.data.token)
-            navigate('/home')
+            localStorage.setItem('user', JSON.stringify(res.data.user))
+            if (res.data.user?.role === 'admin') {
+                navigate('/admin/orders')
+            } else {
+                navigate('/home')
+            }
         } catch (err) {
             setError(err.response?.data?.error || 'Kuch gadbad hui!')
         }
@@ -33,7 +38,10 @@ function Login() {
             <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
 
                 {/* Header */}
-                <h1 className="text-3xl font-bold text-orange-500 text-center mb-2">
+                <h1
+                    onClick={() => navigate('/')}
+                    className="text-3xl font-bold text-orange-500 text-center mb-2 cursor-pointer"
+                >
                     🍱 FoodByMegha
                 </h1>
                 <p className="text-center text-gray-500 mb-6">Login karo apne account mein</p>

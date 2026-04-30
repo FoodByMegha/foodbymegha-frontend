@@ -9,6 +9,15 @@ import AdminOrders from './pages/admin/AdminOrders'
 import AddMenu from './pages/admin/AddMenu'
 import Revenue from './pages/admin/Revenue'
 
+// ✅ Admin route guard
+const AdminRoute = ({ children }) => {
+  const token = localStorage.getItem('token')
+  const user = JSON.parse(localStorage.getItem('user') || '{}')
+  if (!token) return <Navigate to="/login" />
+  if (user.role !== 'admin') return <Navigate to="/home" />
+  return children
+}
+
 function App() {
   return (
     <BrowserRouter>
@@ -19,11 +28,11 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="/track/:id" element={<Track />} />
-        
-        {/* Admin Routes */}
-        <Route path="/admin/orders" element={<AdminOrders />} />
-        <Route path="/admin/menu" element={<AddMenu />} />
-        <Route path="/admin/revenue" element={<Revenue />} />
+
+        {/* ✅ Protected Admin Routes */}
+        <Route path="/admin/orders" element={<AdminRoute><AdminOrders /></AdminRoute>} />
+        <Route path="/admin/menu" element={<AdminRoute><AddMenu /></AdminRoute>} />
+        <Route path="/admin/revenue" element={<AdminRoute><Revenue /></AdminRoute>} />
       </Routes>
     </BrowserRouter>
   )

@@ -21,7 +21,7 @@ function AdminOrders() {
 
   const handleStatusUpdate = async (orderId, status) => {
     try {
-      await API.put(`/orders/${orderId}/status`, { status })
+      await API.put(`/admin/orders/${orderId}/status`, { status })
       fetchOrders()
     } catch (err) {
       console.log(err)
@@ -40,7 +40,12 @@ function AdminOrders() {
 
       {/* Navbar */}
       <nav className="bg-white shadow-sm px-6 py-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-orange-500">🍱 Admin Panel</h1>
+        <h1
+          onClick={() => navigate('/')}
+          className="text-2xl font-bold text-orange-500 cursor-pointer"
+        >
+          🍱 FoodByMegha
+        </h1>
         <div className="flex gap-4">
           <button onClick={() => navigate('/admin/menu')}
             className="text-gray-600 hover:text-orange-500 font-medium">

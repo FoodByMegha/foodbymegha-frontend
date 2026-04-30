@@ -24,7 +24,12 @@ function Revenue() {
 
       {/* Navbar */}
       <nav className="bg-white shadow-sm px-6 py-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-orange-500">🍱 Admin Panel</h1>
+        <h1
+          onClick={() => navigate('/')}
+          className="text-2xl font-bold text-orange-500 cursor-pointer"
+        >
+          🍱 FoodByMegha
+        </h1>
         <button
           onClick={() => navigate('/admin/orders')}
           className="text-gray-600 hover:text-orange-500 font-medium"
