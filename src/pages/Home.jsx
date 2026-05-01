@@ -7,8 +7,8 @@ function Home() {
   const [plans, setPlans] = useState([])
   const [myPlan, setMyPlan] = useState(null)
   const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  // Page load hone pe plans aur my-plan fetch karo
   useEffect(() => {
     fetchPlans()
     fetchMyPlan()
@@ -32,18 +32,55 @@ function Home() {
     }
   }
 
-  const handleSubscribe = async (planId) => {
+  const handlePayment = async (plan) => {
+    setLoading(true)
     try {
-      await API.post('/subscribe', { plan_id: planId })
-      setMessage('Plan le liya! Tiffin aayega 🍱')
-      fetchMyPlan()
+      // Step 1 — Backend se Razorpay order banao
+      const res = await API.post('/payment', { plan_id: plan.ID })
+      const { razorpay_order_id, amount, currency, key_id, plan_name } = res.data
+
+      // Step 2 — Razorpay window kholo
+      const options = {
+        key: key_id,
+        amount: amount,
+        currency: currency,
+        name: 'FoodByMegha',
+        description: plan_name,
+        order_id: razorpay_order_id,
+        handler: async function (response) {
+          // Step 3 — Payment verify karo
+          try {
+            await API.post('/payment/verify', {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            })
+            setMessage('Payment successful! Subscription active ho gaya! 🎉')
+            fetchMyPlan()
+          } catch (err) {
+            setMessage('Payment verify nahi hui!')
+          }
+        },
+        prefill: {
+          name: 'FoodByMegha Customer',
+        },
+        theme: {
+          color: '#f97316',
+        },
+      }
+
+      const rzp = new window.Razorpay(options)
+      rzp.open()
     } catch (err) {
       setMessage(err.response?.data?.error || 'Kuch gadbad hui!')
+    } finally {
+      setLoading(false)
     }
   }
 
   const handleLogout = () => {
     localStorage.removeItem('token')
+    localStorage.removeItem('user')
     navigate('/login')
   }
 
@@ -87,7 +124,7 @@ function Home() {
         {myPlan && (
           <div className="bg-orange-100 border border-orange-300 rounded-2xl p-6 mb-8">
             <h2 className="text-xl font-bold text-orange-600 mb-2">✅ Tera Active Plan</h2>
-            <p className="text-gray-700">Plan: <strong>{myPlan.plan?.name}</strong></p>
+            <p className="text-gray-700">Plan: <strong>{myPlan.Plan?.name || myPlan.plan?.name}</strong></p>
             <p className="text-gray-700">Shuru: {new Date(myPlan.start_date).toLocaleDateString('hi-IN')}</p>
             <p className="text-gray-700">Khatam: {new Date(myPlan.end_date).toLocaleDateString('hi-IN')}</p>
           </div>
@@ -103,11 +140,11 @@ function Home() {
               <p className="text-3xl font-bold text-orange-500 mb-1">₹{plan.price}</p>
               <p className="text-gray-400 text-sm mb-4">{plan.duration_days} din ka plan</p>
               <button
-                onClick={() => handleSubscribe(plan.ID)}
-                disabled={!!myPlan}
+                onClick={() => handlePayment(plan)}
+                disabled={!!myPlan || loading}
                 className="w-full bg-orange-500 text-white py-2 rounded-lg font-semibold hover:bg-orange-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {myPlan ? 'Plan Active Hai' : 'Abhi Lo!'}
+                {myPlan ? 'Plan Active Hai' : loading ? 'Processing...' : '💳 Pay Karo & Subscribe'}
               </button>
             </div>
           ))}
