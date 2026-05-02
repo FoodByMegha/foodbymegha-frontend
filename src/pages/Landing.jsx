@@ -39,7 +39,7 @@ function Landing() {
           >
             Plan Lo Abhi 🍱
           </button>
-          
+
           <a
             href="#plans"
             className="border-2 border-white text-white px-6 py-3 rounded-xl font-semibold"
@@ -170,7 +170,16 @@ function Landing() {
       {/* Footer */}
       <footer className="bg-gray-900 px-6 py-8 text-center">
         <p className="text-white font-bold text-lg mb-1">🍱 FoodByMegha</p>
-        <p className="text-gray-400 text-sm mb-4">Sarojini Nagar, Lucknow</p>
+        <p className="text-gray-400 text-sm mb-2">Sarojini Nagar, Lucknow</p>
+
+        {/* ✅ Inquiry Number */}
+        <a
+          href="tel:+919711301479"
+          className="text-orange-400 font-semibold text-sm mb-4 block hover:text-orange-300"
+        >
+          📞 Inquiry: +91 9711301479
+        </a>
+
         <div className="flex justify-center gap-6 mb-4">
           <button onClick={() => navigate('/login')} className="text-gray-400 text-sm hover:text-white">Login</button>
           <button onClick={() => navigate('/register')} className="text-gray-400 text-sm hover:text-white">Register</button>
