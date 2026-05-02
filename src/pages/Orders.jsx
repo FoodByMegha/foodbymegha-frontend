@@ -6,7 +6,8 @@ function Orders() {
   const navigate = useNavigate()
   const [orders, setOrders] = useState([])
   const [message, setMessage] = useState('')
-  const [todayOrderExists, setTodayOrderExists] = useState(false) // ✅ New
+  const [todayOrderExists, setTodayOrderExists] = useState(false)
+  const [notes, setNotes] = useState('') // ✅ Notes input
 
   useEffect(() => {
     fetchOrders()
@@ -16,8 +17,6 @@ function Orders() {
     try {
       const res = await API.get('/orders')
       setOrders(res.data.orders)
-
-      // ✅ Aaj ka order check karo
       const today = new Date().toISOString().split('T')[0]
       const alreadyOrdered = res.data.orders?.some(o => o.delivery_date === today)
       setTodayOrderExists(alreadyOrdered)
@@ -30,9 +29,10 @@ function Orders() {
     try {
       await API.post('/orders', {
         address: 'Sarojini Nagar, Lucknow',
-        notes: 'kam mirch daalna',
+        notes: notes, // ✅ Customer ka note
       })
       setMessage('Order place ho gaya! 🍱')
+      setNotes('')
       fetchOrders()
     } catch (err) {
       setMessage(err.response?.data?.error || 'Kuch gadbad hui!')
@@ -81,14 +81,32 @@ function Orders() {
           </div>
         )}
 
-        {/* Order button */}
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">Mere Orders</h2>
-          {/* ✅ Button updated */}
+        {/* Order button + Notes */}
+        <div className="bg-white rounded-2xl shadow-md p-6 mb-6">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold text-gray-800">Mere Orders</h2>
+          </div>
+
+          {/* ✅ Notes input */}
+          {!todayOrderExists && (
+            <div className="mb-4">
+              <label className="block text-gray-700 mb-1 text-sm">
+                📝 Koi khaas request? (optional)
+              </label>
+              <input
+                type="text"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="jaise: kam mirch daalna, extra dal dena..."
+                className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-orange-400"
+              />
+            </div>
+          )}
+
           <button
             onClick={handleCreateOrder}
             disabled={todayOrderExists}
-            className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-orange-500 text-white px-4 py-3 rounded-lg hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
           >
             {todayOrderExists ? '✅ Aaj Ka Order Ho Gaya' : '+ Aaj Ka Order'}
           </button>

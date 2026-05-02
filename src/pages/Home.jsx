@@ -63,6 +63,8 @@ function Home() {
         },
         prefill: {
           name: 'FoodByMegha Customer',
+          contact: '',
+          email: '',
         },
         theme: {
           color: '#f97316',
