@@ -13,7 +13,7 @@ function AdminOrders() {
   const fetchOrders = async () => {
     try {
       const res = await API.get('/admin/orders')
-      setOrders(res.data.orders)
+      setOrders(res.data.orders || [])
     } catch (err) {
       console.log(err)
     }
