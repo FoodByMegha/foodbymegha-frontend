@@ -17,7 +17,7 @@ function Home() {
   const fetchPlans = async () => {
     try {
       const res = await API.get('/plans')
-      setPlans(res.data.plans)
+      setPlans(res.data.plans || [])
     } catch (err) {
       console.log(err)
     }
@@ -26,7 +26,7 @@ function Home() {
   const fetchMyPlan = async () => {
     try {
       const res = await API.get('/my-plan')
-      setMyPlan(res.data.my_plan)
+      setMyPlan(res.data.my_plan || null)
     } catch (err) {
       // No active plan — koi baat nahi
     }

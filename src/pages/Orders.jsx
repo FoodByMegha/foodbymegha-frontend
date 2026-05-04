@@ -16,7 +16,7 @@ function Orders() {
   const fetchOrders = async () => {
     try {
       const res = await API.get('/orders')
-      setOrders(res.data.orders)
+      setOrders(res.data.orders || [])
       const today = new Date().toISOString().split('T')[0]
       const alreadyOrdered = res.data.orders?.some(o => o.delivery_date === today)
       setTodayOrderExists(alreadyOrdered)

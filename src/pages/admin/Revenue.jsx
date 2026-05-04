@@ -13,7 +13,7 @@ function Revenue() {
   const fetchRevenue = async () => {
     try {
       const res = await API.get('/admin/revenue')
-      setData(res.data)
+      setData(res.data || null)
     } catch (err) {
       console.log(err)
     }

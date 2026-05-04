@@ -14,7 +14,7 @@ function Track() {
   const fetchOrder = async () => {
     try {
       const res = await API.get(`/track/${id}`)
-      setOrder(res.data.order)
+      setOrder(res.data.order || null)
     } catch (err) {
       console.log(err)
     }
