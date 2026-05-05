@@ -56,7 +56,7 @@ function Register() {
               name="name"
               value={form.name}
               onChange={handleChange}
-              placeholder="Tera naam"
+              placeholder="Your Name"
               className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-orange-400"
               required
             />
