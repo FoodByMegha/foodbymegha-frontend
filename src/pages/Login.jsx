@@ -62,7 +62,7 @@ function Login() {
                             name="email"
                             value={form.email}
                             onChange={handleChange}
-                            placeholder="tera@email.com"
+                            placeholder="your@email.com"
                             className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:border-orange-400"
                             required
                         />
